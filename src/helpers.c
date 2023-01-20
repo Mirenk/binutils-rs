@@ -44,6 +44,8 @@ void show_buffer(struct disassemble_info *info) {
     printf("%x\n", info->buffer[3]);
 }
 
+// do nothing
+void styled_printf(void* useless, const char* format, ...){}
 
 /*** disassemble_info structure helpers ***/
 
@@ -55,8 +57,8 @@ disassemble_info* new_disassemble_info() {
 
 bfd_boolean configure_disassemble_info(struct disassemble_info *info, asection *section, bfd *bfdFile) {
     /* Construct and configure the disassembler_info class using stdout */
-  
-    init_disassemble_info (info, stdout, (fprintf_ftype) copy_buffer);
+
+    init_disassemble_info (info, stdout, (fprintf_ftype) copy_buffer, (fprintf_styled_ftype) styled_printf);
     info->arch = bfd_get_arch (bfdFile);
     info->mach = bfd_get_mach (bfdFile);
     info->section = section;
@@ -69,8 +71,8 @@ bfd_boolean configure_disassemble_info(struct disassemble_info *info, asection *
 
 void configure_disassemble_info_buffer(struct disassemble_info *info, enum bfd_architecture arch, unsigned long mach) {
     /* A variant of configure_disassemble_info() for buffers */
-  
-    init_disassemble_info (info, stdout, (fprintf_ftype) copy_buffer);
+
+    init_disassemble_info (info, stdout, (fprintf_ftype) copy_buffer, (fprintf_styled_ftype) styled_printf);
     info->arch = arch;
     info->mach = mach;
     info->read_memory_func = buffer_read_memory;
