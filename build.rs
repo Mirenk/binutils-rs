@@ -150,6 +150,19 @@ fn main() {
     let version = "2.40";
     let sha256 = "d7f82c4047decf43a6f769ac32456a92ddb6932409a585c633cdd4e9df23d956";
 
+    // Extract the out directory from the env variable
+    let out_dir = match env::var_os("OUT_DIR") {
+        Some(dir) => dir,
+        None => panic!(
+            "\n\n  \
+             OUT_DIR variable is not set!\n\n"
+        ),
+    };
+    let out_directory = out_dir
+        .as_os_str()
+        .to_str()
+        .expect("Invalid OUT_DIR content!");
+
     // Retrieve targets to build
     let targets_var = match env::var_os("TARGETS") {
         Some(dir) => dir,
@@ -163,11 +176,8 @@ fn main() {
     // Get the current working directory
     let current_dir = env::current_dir().unwrap();
 
-    // Where binutils will be built
-    let out_directory = format!("{}/target", current_dir.to_str().unwrap());
-
     // Build binutils
-    build_binutils(version, sha256, &out_directory, targets);
+    build_binutils(version, sha256, out_directory, targets);
 
     // Build our C helpers
     change_dir(current_dir.to_str().unwrap());
