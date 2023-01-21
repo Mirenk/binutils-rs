@@ -143,3 +143,60 @@ unsigned long get_mach(struct bfd_arch_info *arch_info) {
 unsigned long get_section_size(asection *section) {
     return section->size;
 }
+
+/*** symbol wrappers ***/
+long bfd_get_symtab_upper_bound_wrapper(bfd *bfdFile) {
+    return bfd_get_symtab_upper_bound(bfdFile);
+}
+
+long bfd_canonicalize_symtab_wrapper(bfd *bfdFile, asymbol **symbol_table) {
+    return bfd_canonicalize_symtab(bfdFile, symbol_table);
+}
+
+const char *bfd_asymbol_name_wrapper(asymbol *asym) {
+    return bfd_asymbol_name(asym);
+}
+
+int bfd_decode_symclass_wrapper(asymbol *asym) { // func
+    return bfd_decode_symclass(asym);
+}
+
+int bfd_asymbol_value_wrapper(asymbol *asym) { //inline
+    return bfd_asymbol_value(asym);
+}
+
+bool bfd_is_undefined_symclass_wrapper(int symclass) { //func
+    return bfd_is_undefined_symclass(symclass);
+}
+
+long bfd_get_dynamic_symtab_upper_bound_wrapper(bfd *bfdFile) {
+    return bfd_get_dynamic_symtab_upper_bound(bfdFile);
+}
+
+long bfd_canonicalize_dynamic_symtab_wrapper(bfd *bfdFile, asymbol **symbol_table) {
+    return bfd_canonicalize_dynamic_symtab(bfdFile, symbol_table);
+}
+
+int bfd_section_vma_wrapper(asection *sect) {
+    return bfd_section_vma(sect);
+}
+int bfd_section_size_wrapper(asection *sect) {
+    return bfd_section_size(sect);
+}
+
+int bfd_section_flags_wrapper(asection *sect) {
+    return bfd_section_flags(sect);
+}
+
+int bfd_get_section_alignment_wrapper(asection *sect) {
+    return bfd_section_alignment(sect);
+}
+
+const char *bfd_section_name_wrapper(asection *sect) {
+    return bfd_section_name(sect);
+}
+
+// FIXME func
+bool bfd_get_section_contents_wrapper(bfd *bfdFile, asection *sect, void *loc, int offset, int count) {
+    return bfd_get_section_contents(bfdFile, sect, loc, offset, count);
+}

@@ -1,7 +1,7 @@
 // Guillaume Valadon <guillaume@valadon.net>
 // binutils libbfd bindings - bfd.rs
 
-use libc::{c_char, c_uint, c_ulong, uintptr_t};
+use libc::{c_char, c_uint, c_ulong, c_void, uintptr_t};
 
 use std;
 use std::ffi::{CStr, CString};
@@ -32,12 +32,25 @@ extern "C" {
     fn bfd_get_arch(bfd: *const BfdRaw) -> c_uint;
 
     fn bfd_get_mach(bfd: *const BfdRaw) -> c_ulong;
+
+    fn bfd_decode_symclass(asymbol: AsymbolRaw) -> c_uint;
+
+    fn bfd_map_over_sections(
+        bfd: *const BfdRaw,
+        func: extern "C" fn(bfd: BfdRaw, asection: AsectionRaw, obj: *mut c_void) -> c_void,
+        obj: *mut c_void,
+    ) -> c_void;
+
 }
 
 // Rust bfd types
 // Note: - trick from https://doc.rust-lang.org/nomicon/ffi.html
 //       - it allows to use the Rust type checker
 pub(crate) enum BfdRaw {}
+
+pub(crate) enum AsymbolRaw {}
+
+pub(crate) enum AsectionRaw {}
 
 #[derive(Clone, Copy)]
 pub struct Bfd {
@@ -187,7 +200,9 @@ pub fn arch_list() -> Vec<String> {
         }
     }
 
-    unsafe { libc::free(list as *mut libc::c_void); }
+    unsafe {
+        libc::free(list as *mut libc::c_void);
+    }
 
     ret_vec
 }
